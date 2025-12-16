@@ -7,4 +7,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  namespace :api do
+    post 'generate_voice', to: 'voice_requests#create'
+    get 'voice_requests', to: 'voices_requests#index'
+  end
 end
