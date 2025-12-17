@@ -27,7 +27,17 @@ Cloudinary
 RSpec
 Bootstrap
 
----
+
+Live Demo
+
+Application URL:
+https://voice-generation-production.up.railway.app
+
+API Base URL:
+https://voice-generation-production.up.railway.app/api
+
+
+
 API Endpoints
 
 POST `/api/generate_voice`
@@ -54,9 +64,40 @@ Returns the list of voice generation requests for the current user.
 GET /api/voice_requests/:id
 Returns the status and audio URL for a specific request.
 
+
+Authentication Note
+
+
+Authentication was intentionally kept out of scope to focus on core system design and functionality.
+For demo purposes, the application uses a demo user internally.
+The architecture supports easy integration of authentication mechanisms (JWT / Devise) if required.
+
+
+
+Testing
+
+The project uses RSpec for testing:
+Model tests
+API request tests
+Background job tests
+External services (ElevenLabs, Cloudinary) are mocked
+Run tests locally:
+bundle exec rspec
+
+
+
 Environment Variables
 
 ELEVENLABS_API_KEY=your_api_key
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+SECRET_KEY_BASE=your_secret_key
+DATABASE_URL=your_database_url
+
+Deployment
+
+Deployed on Railway
+Uses PostgreSQL
+Environment variables managed via Railway dashboard
+Production-ready configuration
