@@ -145,6 +145,13 @@ GEM
       faraday-retry
     erb (6.0.0)
     erubi (1.13.1)
+    factory_bot (6.5.6)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.5.1)
+      factory_bot (~> 6.5)
+      railties (>= 6.1.0)
+    faker (3.5.3)
+      i18n (>= 1.8.11, < 2)
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -372,6 +379,8 @@ DEPENDENCIES
   debug
   dotenv-rails
   elevenlabs-ruby
+  factory_bot_rails
+  faker
   httparty
   importmap-rails
   jbuilder
