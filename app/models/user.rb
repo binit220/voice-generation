@@ -1,3 +1,3 @@
 class User < ApplicationRecord
-  has_many :voice_generation
+  has_many :voice_generations
 end

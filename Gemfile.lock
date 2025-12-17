@@ -109,6 +109,7 @@ GEM
     bootsnap (1.19.0)
       msgpack (~> 1.2)
     builder (3.3.0)
+    byebug (12.0.0)
     capybara (3.40.0)
       addressable
       matrix
@@ -132,6 +133,10 @@ GEM
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
     domain_name (0.6.20240107)
+    dotenv (3.2.0)
+    dotenv-rails (3.2.0)
+      dotenv (= 3.2.0)
+      railties (>= 6.1)
     drb (2.2.3)
     elevenlabs-ruby (0.2.0)
       addressable
@@ -361,9 +366,11 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk-s3
   bootsnap
+  byebug
   capybara
-  cloudinary (~> 1.0)
+  cloudinary
   debug
+  dotenv-rails
   elevenlabs-ruby
   httparty
   importmap-rails

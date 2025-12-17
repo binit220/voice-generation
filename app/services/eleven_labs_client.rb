@@ -1,10 +1,12 @@
-class ElevenLabsClint
+class ElevenLabsClient
   BASE_URL = "https://api.elevenlabs.io/v1/text-to-speech"
+  VOICE_ID = "EXAVITQu4vr4xnSDxMaL"
 
   def self.generate(text)
-    response = Faraday.post(BASE_URL) do |req|
+    Faraday.post("#{BASE_URL}/#{VOICE_ID}") do |req|
       req.headers["xi-api-key"] = ENV["ELEVENLABS_API_KEY"]
       req.headers["Content-Type"] = "application/json"
+
       req.body = {
         text: text,
         voice_settings: {
@@ -13,7 +15,5 @@ class ElevenLabsClint
         }
       }.to_json
     end
-
-    response
   end
 end

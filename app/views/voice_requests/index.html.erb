@@ -1,0 +1,127 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <!-- Voice Generator Card -->
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          <h4 class="mb-3">🎤 Voice Generator</h4>
+
+          <%= form_with url: "/api/generate_voice",
+                        method: :post,
+                        id: "voice-form",
+                        data: { turbo: false } do %>
+
+            <div class="mb-3">
+              <%= text_area_tag :text, nil,
+                class: "form-control",
+                rows: 4,
+                placeholder: "Enter text to generate voice",
+                required: true %>
+            </div>
+
+            <%= submit_tag "Generate Voice",
+              class: "btn btn-primary" %>
+
+          <% end %>
+
+          <div id="status" class="mt-3 text-muted"></div>
+          <div id="audio-player" class="mt-3"></div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div id="history"></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("voice-form");
+    const statusDiv = document.getElementById("status");
+    const audioDiv = document.getElementById("audio-player");
+    const historyDiv = document.getElementById("history");
+
+    let pollInterval = null;
+
+    // Submit form
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      statusDiv.innerText = "⏳ Generating voice...";
+      audioDiv.innerHTML = "";
+
+      const formData = new FormData(form);
+
+      const res = await fetch(form.action, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          voice_request: {
+            text: formData.get("text")
+          }
+        })
+      });
+
+      const data = await res.json();
+      startPolling(data.id);
+    });
+
+    // Polling for status
+    function startPolling(id) {
+      if (pollInterval) clearInterval(pollInterval);
+
+      pollInterval = setInterval(async () => {
+        const res = await fetch(`/api/voice_requests/${id}`);
+        const vg = await res.json();
+
+        if (vg.status === "pending" || vg.status === "processing") {
+          statusDiv.innerText = "🎧 Processing...";
+        }
+
+        if (vg.status === "completed") {
+          clearInterval(pollInterval);
+          statusDiv.innerText = "✅ Voice Ready";
+
+          audioDiv.innerHTML = `
+            <audio controls autoplay class="w-100 mt-2">
+              <source src="${vg.audio_url}" type="audio/mpeg">
+            </audio>
+          `;
+
+          loadHistory();
+        }
+
+        if (vg.status === "failed") {
+          clearInterval(pollInterval);
+          statusDiv.innerText = "❌ Failed to generate voice";
+        }
+      }, 2000);
+    }
+
+    // Load history
+    async function loadHistory() {
+      const res = await fetch("/api/voice_requests");
+      const list = await res.json();
+
+      historyDiv.innerHTML = `
+        <h5 class="mb-3">🎼 History</h5>
+        ${list.map(vg => `
+          <div class="card p-3 mb-2">
+            <div><strong>Text:</strong> ${vg.text}</div>
+            <div><strong>Status:</strong> ${vg.status}</div>
+            ${vg.audio_url ? `
+              <audio controls class="w-100 mt-2">
+                <source src="${vg.audio_url}" type="audio/mpeg">
+              </audio>
+            ` : ""}
+          </div>
+        `).join("")}
+      `;
+    }
+
+    loadHistory();
+  });
+</script>
