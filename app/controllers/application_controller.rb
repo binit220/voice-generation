@@ -4,7 +4,9 @@ class ApplicationController < ActionController::Base
   private
 
   def set_dummy_user
-    @current_user = User.find(1)   # hardcoded user
+    @current_user = User.first || User.create!(
+      email: "demo@voice.app"
+    )
   end
 
   def current_user
