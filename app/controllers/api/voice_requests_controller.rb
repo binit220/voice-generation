@@ -5,13 +5,15 @@ class Api::VoiceRequestsController < ApplicationController
     vg = current_user.voice_generations.new(voice_generation_params)
     vg.status = "pending"
 
-    if vg.save!
+    if vg.save
       GenerateVoiceJob.perform_later(vg.id)
-
       render json: {
         id: vg.id,
-        status: vg.status
+        status: vg.status,
+        audio_url: vg.audio_url,
+        processing_time: vg.processing_time
       }, status: :ok
+
     else
       render json: {
         errors: vg.errors.full_messages
